@@ -19,6 +19,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('app_cdlink.urls')),
     path('app/nback/', include('app_nback.urls')),
 ]
 

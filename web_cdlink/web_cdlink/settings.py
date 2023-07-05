@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'app_nback'
+    'app_nback',
+    'app_cdlink',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ STATICFILES_DIRS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'static','html')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
