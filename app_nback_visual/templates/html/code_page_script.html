@@ -48,10 +48,11 @@
                 if(data.hasOwnProperty("code")){
                     document.getElementById("nback_code").innerText = data.code;
                     document.getElementById("btn_nback_correct").style.display = "block";
-                    nback_show_code.play();
-                    log_start_nback();
+                    nback_show_card.play();
                 }
             } break;
+            default:
+                console.log("unknown topic");
 
         }
     }

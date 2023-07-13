@@ -4,12 +4,6 @@
 
 {% block javascript %}
 
-<script>
-    window.addEventListener("DOMContentLoaded", (event) => {
-        document.getElementById("btn_nback_correct").style.display = "none";
-
-    });
-</script>
 <script src="{% static 'plugins/bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
 {% endblock %}
 
@@ -26,7 +20,7 @@
     <div class="badge text-wrap" style="width: 12rem"><p style="font-size: 200px;" id="nback_code"></p></div>
     <p></p>
     <p class="lead">
-        <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white" id="btn_nback_correct">일치</a>
+        <button class="btn btn-lg btn-light fw-bold border-white bg-white" id="btn_nback_correct">일치</button>
     </p>
 
   </main>
@@ -35,4 +29,16 @@
     <p></p>
   </footer>
 </div>
+
+<script>
+  /* after page load */
+  window.addEventListener("DOMContentLoaded", (event) => {
+      //document.getElementById("btn_nback_correct").style.display = "none";
+  });
+
+  /* correct button event */
+  document.getElementById('btn_nback_correct').addEventListener('click', function(){
+    nback_correct_press.play();  
+  });
+</script>
 {% endblock %}
