@@ -1,0 +1,35 @@
+{% extends "html/nback_base.html" %} 
+
+{% block javascript %}
+{% endblock %}
+
+
+{%load static %}
+
+{% block contents %}
+
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="mb-auto">
+    <div>
+      <h3 class="float-md-start mb-0">2-Back Task</h3>
+    </div>
+  </header>
+
+  <main class="px-3">
+    <p class="lead">2-Back 태스크는 현재 제시되는 정보와 2번째 이전에 제시된 정보가 일치하는지 판단하는 태스크입니다. 일치한다면 다음 정보가 제시되기 전에 일치 버튼을 누르세요.</p>
+  </main>
+
+  <footer class="mt-auto text-white-50">
+    <p>자율주행 자동차 시뮬레이터에서 피험자의 인지부하를 위한 테스트입니다.</p>
+  </footer>
+</div>
+<script src="{% static 'plugins/bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", (event) => {
+    const nback_intro = new Audio("{% static 'sound/nback_intro.mp3' %}");
+    nback_intro.play()
+  });
+</script>
+
+{% endblock %}

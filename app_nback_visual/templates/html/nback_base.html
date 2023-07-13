@@ -13,7 +13,8 @@
     <title></title>
     
     <link href="{% static 'plugins/bootstrap-5.3.0/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
-    <script type="text/javascript" src="{% static 'plugins/paho-mqtt/paho-mqtt-min.js' %}"></script>
+
+    <!-- Favicons -->
 
     <style>
       .bd-placeholder-img {
@@ -140,69 +141,19 @@
         }
     </style>
 
-<script type="text/javascript">
+    {% block javascript %}
+    {% endblock %}
 
-    /* page load */
-    window.addEventListener('DOMContentLoaded', function(){
-        console.log("loaded");
-    });
-
-    /* mqtt client */
-    let mqtt_client_id = "nback-client-"+parseInt(Math.random()*10000, 10);
-    var mqtt_client = new Paho.MQTT.Client("{{system.mqtt_broker_ip}}", Number("{{system.mqtt_broker_port}}"), mqtt_client_id);
-    mqtt_client.onConnectionLost = mqtt_onConnectionLost;
-    mqtt_client.onMessageArrived = mqtt_onMessageArrived;
-    mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconnect: true, useSSL:false});
-
-    /* MQTT Connection event callback */
-    function mqtt_onConnect(){
-        console.log("connected to host");
-        mqtt_client.subscribe("nback/#");
-        
-    }
-
-    /* MQTT Failure event callback */
-    function mqtt_onFailure(){
-        
-    }
-
-    /* MQTT Connection lost event callback */
-    function mqtt_onConnectionLost(responseObject){
-        
-    }
-
-    /* MQTT message arrived event callback */
-    function mqtt_onMessageArrived(message){
-        const payload = JSON.parse(message.payloadString);
-        
-        switch(message.topic){
-            case "app/nback/visual/page": {
-                console.log("received");
-            } break;
-        }
-    }
-</script>
+    <!-- n-back code page -->
+    {% include 'html/code_page_script.html' %}
     
   </head>
+
+  {% csrf_token %}
   <body class="d-flex h-100 text-center text-bg-dark">
 
-    
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-  <header class="mb-auto">
-    <div>
-      <h3 class="float-md-start mb-0">2-Back Task</h3>
-    </div>
-  </header>
+  {% block contents %}
+  {% endblock %}
 
-  <main class="px-3">
-    <div class="badge bg-primary text-wrap" style="width: 16rem"><p style="font-size: 80px;">A</p></div>
-  </main>
-
-  <footer class="mt-auto text-white-50">
-    <p></p>
-  </footer>
-</div>
-<script src="{% static 'plugins/bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
-
-    </body>
+  </body>
 </html>

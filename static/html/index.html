@@ -20,11 +20,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css'%}">
    
     <script src="{% static 'js/modernizr-2.6.2.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'plugins/paho.javascript-1.0.3/paho-mqtt-min.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'plugins/paho-mqtt/paho-mqtt-min.js' %}"></script>
     <script type="text/javascript">
         let mqtt_client_id = "flame-avsim-client-"+parseInt(Math.random()*10000, 10);
-        var mqtt_client = new Paho.MQTT.Client("192.168.0.4", 8083, mqtt_client_id);
+        var mqtt_client = new Paho.Client("{{system.mqtt_broker_ip}}", Number("{{system.mqtt_broker_port}}"), mqtt_client_id);
         mqtt_client.onConnectionLost = mqtt_onConnectionLost;
         mqtt_client.onMessageArrived = mqtt_onMessageArrived;
         mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconnect: true, useSSL:false});
@@ -34,9 +33,8 @@
 
         /* MQTT Connection event callback */
         function mqtt_onConnect(){
-            console.log("mqtt client connected");
-        
-            // client.subscribe("World");
+            console.log("MQTT broker connected");
+            mqtt_client.subscribe("cdlink/#");
             // message = new Paho.MQTT.Message("Hello");
             // message.destinationName = "World";
             // client.send(message);
@@ -44,7 +42,7 @@
 
         /* MQTT Failure event callback */
         function mqtt_onFailure(){
-            
+            console.log("Failed");
         }
 
         /* MQTT Connection lost event callback */
@@ -56,24 +54,22 @@
 
         /* MQTT message arrived event callback */
         function mqtt_onMessageArrived(message){
-            
+           
             /* status data update */
+            const data = JSON.parse(message.payloadString);   
             switch(message.topic){
-            case "cdlink/app/nback/visual": { 
-                
-            } break;
+               case "cdlink/location":{
+                  if(data.hasOwnProperty("url")){
+                     window.location.replace(data.url);
+                  }
+               }
 
-            case "cdlink/app/surt": {
-                
-            } break;
-            
             }
 
         }
     </script>
 
  </head>
-
  
 <body>
  
@@ -104,10 +100,7 @@
              <a id="logged-user" href="#" class="win-command pull-right">
                 <span class="win-commandicon win-commandring icon-user"></span>
              </a>
-             <div class="pull-left">
-                <h3>IAE</h3>
-                <h4>ICT</h4>
-             </div>
+             
           </div>
        </div>
        </div>
@@ -122,43 +115,68 @@
                       <div class="panorama-section tile-span-4">
     
                          <h2>Congnitive Load Task</h2>
-    
-                         <a class="tile app bg-color-blue" href="{% url 'app_nback_visual_index'%}">
+                        
+                         <!-- apps for avsim-->
+                         <a class="tile app bg-color-blue" href="{% url 'app_2back_visual_index'%}">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/memory.png'%}">
+                                <p><i class="fa-solid fa-star fa-2xs"></i></p>
                             </div>
-                            <div class="app-label">Visual N-Back Task</div>
+                            <div class="app-label">Visual 2-Back Task</div>
                          </a>
+
+                         <a class="tile app bg-color-blue" href="{% url 'app_3back_visual_index'%}">
+                           <div class="image-wrapper">
+                               <img src="{% static 'img/memory.png'%}">
+                               <p>
+                                 <i class="fa-solid fa-star fa-2xs"></i>
+                                 <i class="fa-solid fa-star fa-2xs"></i>
+                              </p>
+                           </div>
+                           <div class="app-label">Visual 3-Back Task</div>
+                        </a>
+
+                        <a class="tile app bg-color-blue" href="{% url 'app_4back_visual_index'%}">
+                           <div class="image-wrapper">
+                               <img src="{% static 'img/memory.png'%}">
+                               <p>
+                                 <i class="fa-solid fa-star fa-2xs"></i>
+                                 <i class="fa-solid fa-star fa-2xs"></i>
+                                 <i class="fa-solid fa-star fa-2xs"></i>
+                              </p>
+                           </div>
+                           <div class="app-label">Visual 4-Back Task</div>
+                        </a>
     
-                         <a class="tile app bg-color-orange" href="{% url 'app_nback_auditory_index'%}">
+                         <a class="tile app bg-color-gray" href="{% url 'app_nback_auditory_index'%}">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/nback.png'%}">
                             </div>
                             <div class="app-label">Auditory N-Back Task</div>
                          </a>
 
-                         <a class="tile app bg-color-green" href="{% url 'app_stroop_visual_index'%}">
+                         <a class="tile app bg-color-gray" href="{% url 'app_stroop_visual_index'%}">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/stroop.png'%}">
                             </div>
                             <div class="app-label">Visual Stroop Task</div>
                          </a>
 
-                         <a class="tile app bg-color-orange" href="{% url 'app_stroop_auditory_index'%}">
+                         <a class="tile app bg-color-gray" href="{% url 'app_stroop_auditory_index'%}">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/stroop.png'%}">
                             </div>
                             <div class="app-label">Auditory Stroop Task</div>
                          </a>
 
-                         <a class="tile app" href="{% url 'app_surt_index'%}" style="background-color: #000000;">
+                         <a class="tile app bg-color-gray" href="{% url 'app_surt_index'%}" style="background-color: #000000;">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/surt.png'%}">
                             </div>
                             <div class="app-label">Surrogate Ref. Task</div>
                          </a>
 
-                         <a class="tile app" href="#" onclick="javascript:play_notify()">
+                         <a class="tile app bg-color-gray" href="#" onclick="javascript:play_notify()">
                             <div class="image-wrapper">
                                 <img src="{% static 'img/surt.png'%}">
                             </div>
