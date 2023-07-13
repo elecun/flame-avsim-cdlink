@@ -1,16 +1,10 @@
 
 {% load static %}
 
-<script type="text/javascript" src="{% static 'plugins/paho-mqtt/paho-mqtt-min.js' %}"></script>
+
 <script type="text/javascript">
 
-    const nback_show_code = new Audio("{% static 'sound/beepc.mp3' %}");
-    const nback_correct_press = new Audio("{% static 'sound/press.mp3' %}");
-
-    function play_show_code(){ nback_show_code.play(); }
-    function play_nback_correct() { nback_correct_press.play();}
-
-    let mqtt_client_id = "flame-nback-client-"+parseInt(Math.random()*10000, 10);
+    //let mqtt_client_id = "flame-nback-client-"+parseInt(Math.random()*10000, 10);
     mqtt_client = new Paho.Client("{{system.mqtt_broker_ip}}", Number("{{system.mqtt_broker_port}}"), mqtt_client_id);
     mqtt_client.onConnectionLost = mqtt_onConnectionLost;
     mqtt_client.onMessageArrived = mqtt_onMessageArrived;
@@ -54,7 +48,7 @@
                 if(data.hasOwnProperty("code")){
                     document.getElementById("nback_code").innerText = data.code;
                     document.getElementById("btn_nback_correct").style.display = "block";
-                    play_show_code();
+                    nback_show_code.play();
                     log_start_nback();
                 }
             } break;

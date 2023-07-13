@@ -13,8 +13,62 @@
     <title></title>
     
     <link href="{% static 'plugins/bootstrap-5.3.0/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'plugins/paho-mqtt/paho-mqtt-min.js' %}"></script>
+    <script type="text/javascript">
 
-    <!-- Favicons -->
+      //global resources
+      const nback_show_code = new Audio("{% static 'sound/beepc.mp3' %}");
+      const nback_correct_press = new Audio("{% static 'sound/press.mp3' %}");
+      const nback_intro = new Audio("{% static 'sound/nback_intro.mp3' %}");
+
+      let mqtt_client_id = "flame-nback-client-"+parseInt(Math.random()*10000, 10);
+      mqtt_client = new Paho.Client("{{system.mqtt_broker_ip}}", Number("{{system.mqtt_broker_port}}"), mqtt_client_id);
+      mqtt_client.onConnectionLost = mqtt_onConnectionLost;
+      mqtt_client.onMessageArrived = mqtt_onMessageArrived;
+      mqtt_client.connect({onSuccess:mqtt_onConnect, onFailure:mqtt_onFailure, reconnect: true, useSSL:false});
+      
+  
+      /* MQTT Connection event callback */
+      function mqtt_onConnect(){
+          console.log("MQTT broker connected");
+          mqtt_client.subscribe("cdlink/#");
+      }
+  
+      /* MQTT Failure event callback */
+      function mqtt_onFailure(){
+          console.log("Failed");
+      }
+  
+      /* MQTT Connection lost event callback */
+      function mqtt_onConnectionLost(responseObject){
+          console.log("on connection lost occurred");
+          if(responseObject.errorCode !== 0) {
+              console.log("onConnectionLost:"+responseObject.errorMessage);
+          }
+      }
+  
+      /* MQTT message arrived event callback */
+      function mqtt_onMessageArrived(message){
+          const data = JSON.parse(message.payloadString);   
+          switch(message.topic){
+              case "cdlink/location":{
+                  if(data.hasOwnProperty("url")){
+                      window.location.href = "{{system.host}}"+"/"+data.url;
+                  }
+              } break;
+              case "cdlink/code":{
+                if(data.hasOwnProperty("code")){
+                    document.getElementById("nback_code").innerText = data.code;
+                    document.getElementById("btn_nback_correct").style.display = "block";
+                    nback_show_code.play();
+                }
+            } break;
+  
+          }
+      }
+  
+  </script>
+    
 
     <style>
       .bd-placeholder-img {
@@ -143,9 +197,6 @@
 
     {% block javascript %}
     {% endblock %}
-
-    <!-- n-back code page -->
-    {% include 'html/code_page_script.html' %}
     
   </head>
 
