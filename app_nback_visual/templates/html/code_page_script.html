@@ -14,7 +14,7 @@
     /* MQTT Connection event callback */
     function mqtt_onConnect(){
         console.log("MQTT broker connected");
-        mqtt_client.subscribe("cdlink/#");
+        mqtt_client.subscribe("flame/avsim/cdlink/#");
         // message = new Paho.MQTT.Message("Hello");
         // message.destinationName = "World";
         // client.send(message);
