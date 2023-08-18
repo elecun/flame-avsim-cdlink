@@ -35,7 +35,6 @@
         function mqtt_onConnect(){
             console.log("MQTT broker connected");
             mqtt_client.subscribe("flame/avsim/cdlink/#");
-            console.log("subscribed");
             // message = new Paho.MQTT.Message("Hello");
             // message.destinationName = "World";
             // client.send(message);
@@ -55,21 +54,27 @@
 
          /* MQTT message arrived event callback */
          function mqtt_onMessageArrived(message){
-            const payload = JSON.parse(message.payloadString);
-            switch(message.topic){
-               // move to any url
-               case "flame/avsim/cdlink/mapi_set_url":
-                  if(payload.hasOwnProperty("url")){
-                     window.location.href = "http://{{system.host}}:{{system.port}}"+payload.url;
-                  }
-              break;
-              case "cdlink/card":
-                  if(data.hasOwnProperty("code")){
-                     document.getElementById("nback_code").innerText = data.code;
-                     //document.getElementById("btn_nback_correct").style.display = "block";
-                     nback_show_card.play();
-                  }
+            try{
+
+               const payload = JSON.parse(message.payloadString.replace(/'/g, '\"'));
+               switch(message.topic){
+                  // move to any url
+                  case "flame/avsim/cdlink/mapi_set_url":
+                     if(payload.hasOwnProperty("url")){
+                        window.location.href = "http://{{system.host}}:{{system.port}}"+payload.url;
+                     }
                break;
+               case "cdlink/card":
+                     if(data.hasOwnProperty("code")){
+                        document.getElementById("nback_code").innerText = data.code;
+                        //document.getElementById("btn_nback_correct").style.display = "block";
+                        nback_show_card.play();
+                     }
+                  break;
+               }
+            }
+            catch(e){
+               console.log("message payload parse error");
             }
          }
     </script>

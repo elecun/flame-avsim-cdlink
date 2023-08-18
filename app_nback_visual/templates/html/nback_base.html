@@ -50,8 +50,9 @@
       /* MQTT message arrived event callback */
       function mqtt_onMessageArrived(message){
         try {
-          const rep_payload = message.payloadString.replace(/'/g, '"');
-          print(rep_payload);
+          console.log("r");
+          const rep_payload = message.payloadString.replace(/'/g, '\"');
+          console.log(rep_payload);
           const payload = JSON.parse(message.payloadString.replace(/'/g, '"'));
           switch(message.topic){
               // move to any url
